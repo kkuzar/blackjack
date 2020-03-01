@@ -1,10 +1,11 @@
 import React from 'react'
 import {Container, createStyles, Grid, Paper, Theme} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
-
-import TableBgImg from '../img/assets/table.jpg'
+import TableBgImg from '../imgs/assets/table.jpg'
 import GameCard from "../componnets/GameCard";
-import {CLUBS, DIAMONDS, HEARTS} from "../constant";
+
+import GamePannel from "../componnets/GamePannel";
+import GameCardDeck from "../componnets/GameCardDeck";
 
 
 const useStyles = makeStyles((theme: Theme) => createStyles(
@@ -14,7 +15,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles(
             height: 800,
             objectFit: "scale-down",
             flexGrow: 1,
-            marginTop: 20
+            marginTop: 5
         },
         header : {
             marginTop: 10,
@@ -23,42 +24,43 @@ const useStyles = makeStyles((theme: Theme) => createStyles(
         paper: {
             padding: theme.spacing(2),
             textAlign: 'center',
+            backgroundColor: 'rgba(255, 255, 255, 0.5)'
             // color: theme.palette.text.secondary,
         },
         papercard: {
             maxWidth: 130
-
         },
+        gamepannel: {
+            marginTop: 20,
+            marginBottom: 0,
+        }
     }
 ));
 
 
 export default function GameTable() {
     const classes = useStyles();
+
     return (
-        <Container className={classes.root}>
+        <Grid className={classes.root}>
             <Grid container spacing={3}>
                 <Grid item xs className={classes.header}>
-                    <Paper className={classes.paper}>BlackJack</Paper>
+                    <Paper className={classes.paper}> BlackJack  |  kuzar.fi</Paper>
                 </Grid>
             </Grid>
 
-            <Grid container
-                  spacing={1}
-                  justify="center"
-                  alignItems="center">
-
-                <Grid item><GameCard name={CLUBS} value={11}/></Grid>
-                <Grid item><GameCard name={null} value={1}/></Grid>
+            <Grid container >
+                <GameCardDeck/>
             </Grid>
 
             <Grid container
                   spacing={1}
                   justify="center"
-                  alignItems="center">
-
-                <Grid item><GameCard name={DIAMONDS} value={11}/></Grid>
-                <Grid item><GameCard name={HEARTS} value={1}/></Grid>
+                  alignItems="center" className={classes.gamepannel}>
+                <Grid item>
+                    <GamePannel />
+                </Grid>
             </Grid>
-        </Container>);
+
+        </Grid>);
 }

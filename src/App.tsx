@@ -1,15 +1,17 @@
 import React from 'react';
 import './App.css';
 import GameTable from "./layouts/GameTable";
-import {makeStyles} from "@material-ui/core/styles";
-
-
+import gameStore from "./stores/gameStore";
+import {Provider} from 'react-redux'
 
 function App() {
-  return (
-    <div className="App">
-        <GameTable/>
-    </div>
+
+    return (
+      <Provider store={gameStore}>
+          <div className="App">
+              <GameTable />
+          </div>
+      </Provider>
   );
 }
 
