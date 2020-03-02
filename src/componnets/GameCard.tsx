@@ -4,7 +4,7 @@ import {makeStyles} from "@material-ui/core/styles";
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardMedia from '@material-ui/core/CardMedia';
-import {CardType, CardFaces} from "../constants";
+import {CardType, CardFaces, CardDeck} from "../constants";
 
 
 const useStyles = makeStyles((theme: Theme) => createStyles(
@@ -17,34 +17,18 @@ const useStyles = makeStyles((theme: Theme) => createStyles(
     }
 ));
 
-function getCardFace(prop: CardType) : string {
-    switch (prop.name) {
-        case "clubs":
-            // @ts-ignore
-            return CardFaces[`C${prop.value}`];
-        case "diamonds":
-            // @ts-ignore
-            return CardFaces[`D${prop.value}`];
-        case "hearts":
-            // @ts-ignore
-            return CardFaces[`H${prop.value}`];
-        case "spades":
-            // @ts-ignore
-            return CardFaces[`S${prop.value}`];
-        default:
-            return CardFaces["BG"];
-    }
-};
-
-
 export default function GameCard(props: CardType) {
 
-    if (props.value > 13 || props.value < 0) {
+    if (props.value > 52 || props.value < 0) {
         throw new Error(`card value is inValid! [ value:  ${props.value} ]`)
     }
 
     const classes = useStyles();
-    const face = getCardFace(props);
+    let face = props.name;
+
+    if (props.isBack) {
+        face = CardDeck[0].name // BG
+    }
     return (
         <Card className={classes.gamecard}>
             <CardActionArea>

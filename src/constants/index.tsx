@@ -114,8 +114,14 @@ export const SPADES = "spades";
 export const HEARTS = "hearts";
 
 export type CardType = {
-    name : typeof DIAMONDS | typeof CLUBS | typeof SPADES | typeof HEARTS | null,
+    name: typeof DIAMONDS | typeof CLUBS | typeof SPADES | typeof HEARTS | string,
+    isBack?: boolean,
     value: number
+}
+
+export type CardRack = {
+    house: CardType[],
+    player: CardType[],
 }
 
 export const CardFaces = {

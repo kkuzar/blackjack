@@ -13,7 +13,7 @@ import {
 import {makeStyles} from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import {connect} from "react-redux";
-import {betDownAction} from "../actions/gameAction";
+import {betDownAction, giveCardActionn} from "../actions/gameAction";
 
 const useStyles = makeStyles((theme: Theme) => createStyles(
     {
@@ -56,16 +56,17 @@ const mapStateToProps = (state) => {
 // @ts-ignore
 const mapDispatchToProps = dispatch => {
     return {
-        betDown: num => dispatch(betDownAction(num))
+        betDown: num => dispatch(betDownAction(num)),
+        giveCard: () => dispatch(giveCardActionn()),
     }
 };
 
 const GamePannel: React.FC = (props: any) => {
 
+    // @ts-ignore
     const classes = useStyles();
     const betAction = props.betDown;
-
-
+    const giveCard = props.giveCard;
     return (
         <Card>
             <CardContent>
@@ -74,14 +75,14 @@ const GamePannel: React.FC = (props: any) => {
                     container
                 >
                     <Grid item>
-                        <Typography >
+                        <Typography component={'div'} >
                             <Box color="success.main"> Your Money: {props.cash} €</Box>
 
                         </Typography>
                     </Grid>
 
                     <Grid item>
-                        <Typography>
+                        <Typography component={'span'}>
                             <Box color="info.main"> Bet in Game: {props.betin} €</Box>
                         </Typography>
                     </Grid>
@@ -95,7 +96,7 @@ const GamePannel: React.FC = (props: any) => {
                                 variant="contained"
                                 className={classes.dealbtn}
                                 disabled={!props.isDealAva}
-                                disableElevation>
+                                onClick={props.giveCard}>
                             DEAL
                         </Button>
                     </Grid>
@@ -103,7 +104,10 @@ const GamePannel: React.FC = (props: any) => {
             </CardActions>
 
             <CardActions className={classes.gamepannel}>
-                <ButtonGroup size="large" color="primary" aria-label="large outlined primary button group">
+                <ButtonGroup size="large"
+                             color="primary"
+                             aria-label="large outlined primary button group"
+                             disabled={!props.isBetAva}>
                     <Button onClick={() => betAction(5)}>5$</Button>
                     <Button onClick={() => betAction(10)}>10$</Button>
                     <Button onClick={() => betAction(25)}>25$</Button>

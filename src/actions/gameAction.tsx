@@ -1,4 +1,4 @@
-import {BET_DOWN, GAME_STARTED} from "../constants";
+import {BET_DOWN, GIVE_CARD} from "../constants";
 import { AnyAction} from "redux";
 
 
@@ -10,6 +10,18 @@ export const betDownAction =  (betnum: number = 100) : AnyAction => {
         isHitAva: false,
         isStandAva: true,
         isDoubleAva: false,
+        isSpliceAva: false
+    }
+};
+
+
+export const giveCardActionn = () : AnyAction => {
+    return {
+        type: GIVE_CARD,
+        isDealAva: false,
+        isHitAva: true,
+        isStandAva: true,
+        isDoubleAva: true,
         isSpliceAva: false
     }
 };
