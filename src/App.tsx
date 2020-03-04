@@ -4,18 +4,25 @@ import GameTable from "./layouts/GameTable";
 import gameStore from "./stores/gameStore";
 import {Provider} from 'react-redux'
 
-function App() {
+let gStore = gameStore();
+
+export gStore
+
+
+export const App = () => {
+
+
 
     return (
-      <Provider store={gameStore}>
+      <Provider store={gStore}>
           <div className="App">
               <GameTable />
           </div>
       </Provider>
   );
-}
+};
 
-export default App;
+  App;
 
 
 // <header className="App-header">

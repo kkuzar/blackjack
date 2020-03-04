@@ -1,11 +1,10 @@
-import React, {Fragment, useEffect} from 'react'
+import React from 'react'
 import { createStyles, Grid, Paper, Theme} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import TableBgImg from '../imgs/assets/table.jpg'
-import {connect, useSelector} from "react-redux";
+
 import GamePannel from "../componnets/GamePannel";
 import GameCardDeck from "../componnets/GameCardDeck";
-
 
 
 const useStyles = makeStyles((theme: Theme) => createStyles(
@@ -41,36 +40,9 @@ const useStyles = makeStyles((theme: Theme) => createStyles(
     }
 ));
 
-function getCards(cards, rackclass) {
-    if (cards.h.length && cards.p.length) {
-        return ( <GameCardDeck {...cards} />)
-    } else {
-        return (
-            <Fragment>
-                <Grid container className={rackclass} alignItems="center"/>
-                <Grid container className={rackclass} alignItems="center"/>
-            </Fragment>
-        );
-    }
-}
-
-const mapStateToProps = (state) => {
-    console.log(state.game.cards);
-    return {
-        cards: state.game.cards,
-    }
-};
-
-const mapDispatchToProps = dispatch => {
-    return {
-    }
-};
-
 function GameTable(props)  {
 
     const classes = useStyles();
-    const cards = props.cards;
-
     return (
         <Grid className={classes.root}>
             <Grid container spacing={3}>
@@ -80,10 +52,8 @@ function GameTable(props)  {
             </Grid>
 
             <Grid container>
-                { getCards(  props.cards, classes.rack)}
+                <GameCardDeck/>
             </Grid>
-
-            { JSON.stringify(props.cards, null, ' ')}
 
             <Grid container
                   spacing={1}
@@ -98,4 +68,4 @@ function GameTable(props)  {
 }
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(GameTable)
+export default GameTable

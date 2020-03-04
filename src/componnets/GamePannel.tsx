@@ -13,7 +13,9 @@ import {
 import {makeStyles} from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import {connect} from "react-redux";
-import {betDownAction, giveCardActionn} from "../actions/gameAction";
+import {betDownAction, giveCardActionn, turnFaceAction, updateScoreAction} from "../actions/gameAction";
+import {calcAndUpdateScore, tranlateNumber2Card} from "../gameLogic";
+import {STAND_CARD} from "../constants";
 
 const useStyles = makeStyles((theme: Theme) => createStyles(
     {
@@ -40,7 +42,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles(
 ));
 
 const mapStateToProps = (state) => {
-    console.log(state.game);
+
     return {
         cash: state.game.cash,
         betin: state.game.betin,
@@ -50,14 +52,17 @@ const mapStateToProps = (state) => {
         isBetAva: state.game.isBetAva,
         isDoubleAva: state.game.isDoubleAva,
         isSpliceAva: state.game.isSpliceAva,
+        cards: state.game.cards,
+        scores: state.game.scores,
     }
 };
 
 // @ts-ignore
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
     return {
         betDown: num => dispatch(betDownAction(num)),
         giveCard: () => dispatch(giveCardActionn()),
+        turnFace: (nextact) => dispatch(turnFaceAction(nextact)),
     }
 };
 
@@ -66,9 +71,13 @@ const GamePannel: React.FC = (props: any) => {
     // @ts-ignore
     const classes = useStyles();
     const betAction = props.betDown;
-    const giveCard = props.giveCard;
+    const turnFace = props.turnFace;
+
+    const scores = props.scores;
+
     return (
         <Card>
+            { JSON.stringify(scores, null, ' ')}
             <CardContent>
                 <Grid
                     justify="space-between"
@@ -129,7 +138,11 @@ const GamePannel: React.FC = (props: any) => {
                     </Grid>
 
                     <Grid item>
-                        <Button variant="contained" disabled={!props.isStandAva} className={classes.standbtn}>
+                        <Button variant="contained"
+                                onClick={() =>
+                                    turnFace(STAND_CARD)}
+                                disabled={!props.isStandAva}
+                                className={classes.standbtn}>
                             STAND
                         </Button>
                     </Grid>
@@ -140,11 +153,11 @@ const GamePannel: React.FC = (props: any) => {
                         </Button>
                     </Grid>
 
-                    <Grid item>
-                        <Button variant="contained" disabled={!props.isSpliceAva}>
-                            SPLIT
-                        </Button>
-                    </Grid>
+                    {/*<Grid item>*/}
+                    {/*    <Button variant="contained" disabled={!props.isSpliceAva}>*/}
+                    {/*        SPLIT*/}
+                    {/*    </Button>*/}
+                    {/*</Grid>*/}
                 </Grid>
             </CardActions>
         </Card>

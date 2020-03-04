@@ -84,6 +84,9 @@ export type BET_DOWN = typeof BET_DOWN;
 export const GIVE_CARD = 'GIVE_CARD';
 export type GIVE_CARD = typeof GIVE_CARD;
 
+export const TURN_FACE = 'TURN_FACE';
+export type TURN_FACE = typeof TURN_FACE;
+
 export const SPLIT_CARD = 'SPLIT_CARD';
 export type SPLIT_CARD = typeof SPLIT_CARD;
 
@@ -96,6 +99,9 @@ export type HIT_CARD = typeof HIT_CARD;
 export const STAND_CARD = 'STAND_CARD';
 export type STAND_CARD = typeof STAND_CARD;
 
+// Middle State
+export const UPDATE_SCORE = 'UPDATE_SCORE';
+export type UPDATE_SCORE = typeof UPDATE_SCORE;
 
 // Game  Calculation Status
 
@@ -113,6 +119,10 @@ export const CLUBS = "clubs";
 export const SPADES = "spades";
 export const HEARTS = "hearts";
 
+export const WIN_FLAG = "WIN";
+export const LOSE_FLAG = "LOSE";
+export const CONTINUE_FLAG = "CON";
+
 export type CardType = {
     name: typeof DIAMONDS | typeof CLUBS | typeof SPADES | typeof HEARTS | string,
     isBack?: boolean,
@@ -122,6 +132,11 @@ export type CardType = {
 export type CardRack = {
     house: CardType[],
     player: CardType[],
+}
+
+export type GeneratedCardNumber = {
+    h: number[],
+    p: number[],
 }
 
 export const CardFaces = {

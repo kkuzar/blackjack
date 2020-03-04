@@ -1,19 +1,31 @@
-import React, {Component, Fragment} from 'react'
+import React, {Fragment, useEffect, useRef, useState} from 'react'
 import {
     Box,
     Card,
     CardContent,
-    Container,
     createStyles,
     Divider,
     Grid,
-    Paper,
     Theme,
-    Typography
 } from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
-import {CardDeck, CardRack, CardType} from "../constants";
+import {BET_DOWN, GAME_STARTED, GeneratedCardNumber, GIVE_CARD} from "../constants";
 import GameCard from "./GameCard";
+import {connect} from "react-redux";
+import {calcAndUpdateScore, tranlateNumber2Card} from "../gameLogic";
+
+
+const useDidUpdate = (callback, deps) => {
+    const hasMount = useRef(false);
+
+    useEffect(() => {
+        if (hasMount.current) {
+            callback()
+        } else {
+            hasMount.current = true
+        }
+    }, deps)
+};
 
 const useStyles = makeStyles((theme: Theme) => createStyles(
     {
@@ -27,105 +39,103 @@ const useStyles = makeStyles((theme: Theme) => createStyles(
             backgroundColor: 'rgba(0, 0, 0, 0.2)'
         },
         score: {
-
             backgroundColor: 'rgba(0, 0, 0, 0.5)'
         }
     }
 ));
 
-const tranlateNumber2Card = (input)  => {
-    let {h, p}= input;
-
-    const house =  h.map(function (value,index) {
-        let isBack = false;
-        if (index === 0 ) isBack = true;
-        let e = CardDeck[value];
-        return {
-            name: e.name,
-            isBack : isBack,
-            value : e.value
-
-        }
-    });
-
-    const player =  p.map(function (value) {
-        let e = CardDeck[value];
-        return {
-            name: e.name,
-            isBack: false,
-            value : e.value
-        }
-    })
-
+const mapStateToProps = (state) => {
     return {
-        house: house,
-        player: player
+        type: state.game.type,
+        cash: state.game.cash,
+        betin: state.game.betin,
+        isDealAva: state.game.isDealAva,
+        isHitAva: state.game.isHitAva,
+        isStandAva: state.game.isStandAva,
+        isBetAva: state.game.isBetAva,
+        isDoubleAva: state.game.isDoubleAva,
+        isSpliceAva: state.game.isSpliceAva,
+        cards: state.game.cards,
+        deck: state.game.deck,
+        scores: state.game.scores
     }
 };
 
-function scoreBoard(color, num, classname, role = 'house') {
+
+const scoreBoard = (color, num, classname, boardString = 'house') => {
     return (
         <Grid item>
             <Card className={classname}>
                 <CardContent>
-                    <Grid
-                        justify="center"
-                    >
-                        <Typography >
-                            <Box  fontWeight={500} color={color}> {role} : { num }</Box>
-                        </Typography>
-                    </Grid>
+                    {/*<Grid*/}
+                    {/*>*/}
+                    {/*    <Typography>*/}
+                    <Box fontWeight={500} color={color}> {boardString} : <strong>{num}</strong> </Box>
+                    {/*</Typography>*/}
+                    {/*</Grid>*/}
                 </CardContent>
             </Card>
         </Grid>
     )
-}
+};
 
+const RackElement = (styleClass, propsContext, role: string = 'house') => {
+    const caseWhenHideCardFace = [GAME_STARTED, BET_DOWN, GIVE_CARD];
+    const cardrack: GeneratedCardNumber = propsContext.cards;
+    const {house, player} = tranlateNumber2Card(cardrack, (!caseWhenHideCardFace.includes(propsContext.type)));
 
-export default function GameCardDeck(props) {
+    // nothing to render when card rack is empty (on initial state)
+    if (!(house.length && player.length)) return;
+
+    const {househand, playerhand} = calcAndUpdateScore(house, player);
+
+    if (role === 'house') {
+        return (
+            <Fragment>
+                {house.map((e, i) => {
+                    return <Grid key={i} item><GameCard name={e.name} value={e.value} isBack={e.isBack}/></Grid>
+                })}
+                {scoreBoard("secondary.main", househand, styleClass)}
+            </Fragment>
+        )
+    }
+    if (role === 'player') {
+        return (
+            <Fragment>
+                {player.map((e, i) => {
+                    return <Grid key={i} item><GameCard name={e.name} value={e.value} isBack={false}/></Grid>
+                })}
+                {scoreBoard("success.main", playerhand, styleClass, "Your Hand ")}
+            </Fragment>
+        )
+    }
+    return;
+};
+
+const GameCardDeck = (props) => {
     const classes = useStyles();
-    let playerHand = 0, househand = 0;
-
-    const { house , player } = tranlateNumber2Card(props);
-    const addReducer = (accumulator, currentValue) => accumulator + currentValue;
-    playerHand = player.map((e) => {return e.value}).reduce(addReducer);
-    househand = house.map((e) => {
-        if (!e.isBack) {
-            return e.value;
-        } else {
-            return 0;
-        }
-    }).reduce(addReducer);
 
     return (
         <Fragment>
-                <Grid container
-                      spacing={1}
-                      justify="center"
-                      className={classes.houserack}
-                      alignItems="center">
+            <Grid container
+                  spacing={1}
+                  justify="center"
+                  className={classes.houserack}
+                  alignItems="center">
 
-                    { house.map((e,i) => {
-                        return <Grid key={i} item><GameCard  name={e.name} value={e.value} isBack={e.isBack}/></Grid>
-                    })}
+                {RackElement(classes.score, props)}
+            </Grid>
+            <Divider variant="middle"/>
+            <Grid container
+                  spacing={1}
+                  justify="center"
+                  className={classes.playerrack}
+                  alignItems="center">
 
-                    {scoreBoard("secondary.main", househand, classes.score) }
-
-                </Grid>
-                <Divider variant="middle" />
-                <Grid container
-                      spacing={1}
-                      justify="center"
-                      className={classes.playerrack}
-                      alignItems="center">
-
-                    { player.map((e,i) => {
-                        return <Grid  key={i} item><GameCard  name={e.name} value={e.value} isBack={false}/></Grid>
-                    })}
-
-                    {scoreBoard("success.main", playerHand, classes.score, "Your Hand ") }
-
-                </Grid>
+                {RackElement(classes.score, props, 'player')}
+            </Grid>
         </Fragment>
-);
-}
+    );
+};
+
+export default connect(mapStateToProps)(GameCardDeck);

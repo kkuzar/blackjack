@@ -1,5 +1,5 @@
 import {AnyAction, combineReducers} from "redux";
-import {BET_DOWN, GAME_STARTED, GIVE_CARD} from "../constants";
+import {BET_DOWN, GAME_STARTED, GIVE_CARD, STAND_CARD, TURN_FACE, UPDATE_SCORE} from "../constants";
 import {act} from "react-dom/test-utils";
 import {range, shuffle} from "../gameLogic";
 
@@ -15,7 +15,9 @@ const gameInitialState = {
     isSpliceAva: false,
     isBetAva: true,
     cards: {h: [], p: []},
-    deck: shuffle(range(1,52,1)),
+    deck: shuffle(range(1, 52, 1)),
+    scores: [0, 0],  // [ house , player]
+    nextstate: null,
 };
 
 
@@ -25,12 +27,12 @@ const gameReducer = (state = gameInitialState, action: AnyAction) => {
             return {
                 ...state,
                 type: action.type,
-                isBetAva: false,
-                isDealAva: true,
+                isBetAva: action.isBetAva,
+                isDealAva: action.isDealAva,
                 betin: action.betin,
             };
         case GIVE_CARD:
-            let res = {
+            let resGive = {
                 ...state,
                 cash: state.cash - state.betin,
                 betin: state.betin,
@@ -41,14 +43,41 @@ const gameReducer = (state = gameInitialState, action: AnyAction) => {
                 isStandAva: action.isStandAva,
                 isDoubleAva: action.isDoubleAva,
             };
-            res.deck = shuffle(res.deck);
-            res.deck = shuffle(res.deck);
+            resGive.deck = shuffle(resGive.deck);
+            resGive.deck = shuffle(resGive.deck);
             // @ts-ignore
-            res.cards.h.push(res.deck.pop()); res.cards.h.push(res.deck.pop());
+            resGive.cards.h.push(resGive.deck.pop());resGive.cards.h.push(resGive.deck.pop());
             // @ts-ignore
-            res.cards.p.push(res.deck.pop());res.cards.p.push(res.deck.pop());
-
-            return res;
+            resGive.cards.p.push(resGive.deck.pop());resGive.cards.p.push(resGive.deck.pop());
+            return resGive;
+        case UPDATE_SCORE:
+            return {
+                ...state,
+                // type: action.type,
+                scores: action.scores
+            };
+        case TURN_FACE:
+            let resTurn = {
+                ...state,
+                type: action.type,
+                nextstate: action.nextstate
+            };
+            return resTurn;
+        case STAND_CARD:
+            let resStand = {
+                ...state,
+                type: action.type,
+                isDealAva: action.isDealAva,
+                isHitAva: action.isHitAva,
+                isStandAva: action.isStandAva,
+                isDoubleAva: action.isDoubleAva,
+                isSpliceAva: action.isSpliceAva,
+                isBetAva: action.isBetAva,
+            };
+            // @ts-ignore
+            resStand.deck = shuffle(resStand.deck);resStand.deck = shuffle(resStand.deck);
+            //
+            return resStand;
         default:
             return state;
     }
@@ -56,7 +85,7 @@ const gameReducer = (state = gameInitialState, action: AnyAction) => {
 
 
 const rootReducer = combineReducers({
-    game: gameReducer
+    game: gameReducer,
 });
 
 export default rootReducer;
