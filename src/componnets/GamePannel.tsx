@@ -148,11 +148,11 @@ const GamePannel: React.FC = (props: any) => {
                         </Button>
                     </Grid>
 
-                    {/*<Grid item>*/}
-                    {/*    <Button variant="contained" disabled={!props.isDoubleAva}>*/}
-                    {/*        DOUBLE*/}
-                    {/*    </Button>*/}
-                    {/*</Grid>*/}
+                    <Grid item>
+                        <Button variant="contained" disabled={!props.isDoubleAva}>
+                            DOUBLE
+                        </Button>
+                    </Grid>
 
                     {/*<Grid item>*/}
                     {/*    <Button variant="contained" onClick={() => restart} disabled={!props.isNewGameAva}>*/}

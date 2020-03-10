@@ -28,18 +28,45 @@ export const calcAndUpdateScore = (house: CardType[], player: CardType[], turnCa
         }
     }).reduce(addReducer);
 
-    if (turnCardFace) houseHand = house.map((e) => {
-        return e.value
-    }).reduce(addReducer);
 
-    const playerHand = player.map((e) => {
-        return e.value
-    }).reduce(addReducer);
+    if (turnCardFace) houseHand = reduceWithAces(house);
+
+    const playerHand = reduceWithAces(player);
 
     return {
         househand: houseHand,
         playerhand: playerHand
     }
+};
+
+const checkAces = (input: CardType[]) => {
+    let res = input.map((e) => {
+        return e.value === 1;
+    });
+    return res;
+};
+
+const reduceWithAces = (input: CardType[]) => {
+    const isAces = checkAces(input);
+    const addReducer = (accumulator, currentValue) => accumulator + currentValue;
+
+    if (isAces.includes(true)) {
+        // map twice.
+        const small = input.map((e) => e.value);
+
+        const big = input.map((e) => {
+            if (e.value === 1) return 11;
+            return e.value;
+        });
+
+        if (big.reduce(addReducer) > 21) {
+            return small.reduce(addReducer);
+        } else {
+            return big.reduce(addReducer);
+        }
+    }
+
+    return input.map((e) => e.value).reduce(addReducer)
 };
 
 export const tranlateNumber2Card = (input: GeneratedCardNumber, turnCardFace: boolean = false) => {
