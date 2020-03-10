@@ -1,21 +1,27 @@
 import {put, select, takeEvery} from 'redux-saga/effects'
 import {
     BUST_CARD,
-    CONTINUE_FLAG, DI_IDLE,
-    GIVE_CARD, HIT_CARD,
+    CONTINUE_FLAG,
+    DI_IDLE,
+    DOUBLE_CARD,
+    GIVE_CARD,
+    HIT_CARD,
     LOSE_FLAG,
     PUSH_CARD,
     PUSH_FLAG,
     STAND_CARD,
     TURN_FACE,
-    WIN_CARD, WIN_FLAG
+    WIN_CARD,
+    WIN_FLAG
 } from "../constants";
 import {
-    GameOverAction, hitAction,
+    GameOverAction,
+    hitAction,
     LoseAction,
     openDialogAction,
     PushAction,
     standAction,
+    turnFaceAction,
     updateScoreAction,
     WinAction
 } from "../actions/gameAction";
@@ -28,6 +34,7 @@ function* rootSaga() {
     yield takeEvery(TURN_FACE, turnFace);
     yield takeEvery(STAND_CARD, handleTurns);
     yield takeEvery(HIT_CARD, handleHit);
+    yield takeEvery(DOUBLE_CARD, handleDouble);
 
 
     yield takeEvery(BUST_CARD, handleBust);
@@ -52,6 +59,11 @@ function* handleHit() {
     yield put(updateScoreAction(house, player));
     if (player > 21) return yield put(LoseAction());
     if (player === 21) return yield  put(WinAction());
+}
+
+function* handleDouble() {
+    yield put(hitAction());
+    yield put(standAction())
 }
 
 function*  handleTurns () {

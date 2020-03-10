@@ -58,6 +58,7 @@ export const standAction = () => {
         type: STAND_CARD,
         isHitAva: false,
         isStandAva: false,
+        isDoubleAva: false,
     }
 };
 
@@ -66,6 +67,13 @@ export const hitAction = () => {
         type: HIT_CARD,
         isHitAva: true,
         isStandAva: true,
+    }
+};
+
+export const doubleAction = () => {
+    return {
+        type: DOUBLE_CARD,
+        isDoubleAva: false
     }
 };
 

@@ -2,7 +2,7 @@ import {AnyAction, combineReducers} from "redux";
 import {
     BET_DOWN, BUST_CARD,
     DI_IDLE,
-    DI_TRIGGER, GAME_OVER,
+    DI_TRIGGER, DOUBLE_CARD, GAME_OVER,
     GAME_STARTED,
     GIVE_CARD, HIT_CARD, PUSH_CARD,
     STAND_CARD,
@@ -87,6 +87,7 @@ const gameReducer = (state = gameInitialState, action: AnyAction) => {
                 type: action.type,
                 isHitAva: action.isHitAva,
                 isStandAva: action.isStandAva,
+                isDoubleAva: action.isDoubleAva
             };
             // shuffle the deck.
             resStand.deck = shuffle(resStand.deck);
@@ -104,6 +105,14 @@ const gameReducer = (state = gameInitialState, action: AnyAction) => {
             // @ts-ignore
             resHit.cards.p.push(resHit.deck.pop());
             return resHit;
+        case DOUBLE_CARD:
+            return  {
+                ...state,
+                type: action.type,
+                cash: state.cash - state.betin,
+                betin: 2 * state.betin,
+                isDoubleAva: action.isDoubleAva,
+            };
         case PUSH_CARD:
             return {
                 ...state,

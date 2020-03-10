@@ -13,7 +13,14 @@ import {
 import {makeStyles} from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import {connect} from "react-redux";
-import {betDownAction, GameOverAction, giveCardActionn, hitAction, turnFaceAction} from "../actions/gameAction";
+import {
+    betDownAction,
+    doubleAction,
+    GameOverAction,
+    giveCardActionn,
+    hitAction,
+    turnFaceAction
+} from "../actions/gameAction";
 import {HIT_CARD, STAND_CARD} from "../constants";
 
 const useStyles = makeStyles((theme: Theme) => createStyles(
@@ -65,6 +72,7 @@ const mapDispatchToProps = (dispatch) => {
         giveCard: () => dispatch(giveCardActionn()),
         turnFace: (nextact) => dispatch(turnFaceAction(nextact)),
         hitCard: () => dispatch(hitAction()),
+        doubleIt: () => dispatch(doubleAction()),
     }
 };
 
@@ -75,6 +83,7 @@ const GamePannel: React.FC = (props: any) => {
     const betAction = props.betDown;
     const turnFace = props.turnFace;
     const hitCard = props.hitCard;
+    const doubleIt = props.doubleIt;
 
     return (
         <Card>
@@ -149,7 +158,9 @@ const GamePannel: React.FC = (props: any) => {
                     </Grid>
 
                     <Grid item>
-                        <Button variant="contained" disabled={!props.isDoubleAva}>
+                        <Button variant="contained"
+                                onClick={doubleIt}
+                                disabled={!props.isDoubleAva}>
                             DOUBLE
                         </Button>
                     </Grid>
