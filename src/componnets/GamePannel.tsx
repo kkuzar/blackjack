@@ -125,12 +125,12 @@ const GamePannel: React.FC = (props: any) => {
                              color="primary"
                              aria-label="large outlined primary button group"
                              disabled={!props.isBetAva}>
-                    <Button onClick={() => betAction(5)}>5$</Button>
-                    <Button onClick={() => betAction(10)}>10$</Button>
-                    <Button onClick={() => betAction(25)}>25$</Button>
-                    <Button onClick={() => betAction(50)}>50$</Button>
-                    <Button onClick={() => betAction(100)}>100$</Button>
-                    <Button onClick={() => betAction(500)}>500$</Button>
+                    <Button onClick={() => betAction(5)}>5 €</Button>
+                    <Button onClick={() => betAction(10)}>10 €</Button>
+                    <Button onClick={() => betAction(25)}>25 €</Button>
+                    <Button onClick={() => betAction(50)}>50 €</Button>
+                    <Button onClick={() => betAction(100)}>100 €</Button>
+                    <Button onClick={() => betAction(500)}>500 €</Button>
                 </ButtonGroup>
             </CardActions>
 

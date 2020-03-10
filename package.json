@@ -1,7 +1,7 @@
 {
   "name": "blackjack",
   "version": "0.1.0",
-  "private": true,
+  "homepage": "https://blackjack.kuzar.fi",
   "author": "Kuzar Kyzyrbek",
   "license": "MIT",
   "dependencies": {
