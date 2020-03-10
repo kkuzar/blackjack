@@ -21,7 +21,6 @@ import {
     openDialogAction,
     PushAction,
     standAction,
-    turnFaceAction,
     updateScoreAction,
     WinAction
 } from "../actions/gameAction";

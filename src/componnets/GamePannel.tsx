@@ -16,12 +16,11 @@ import {connect} from "react-redux";
 import {
     betDownAction,
     doubleAction,
-    GameOverAction,
     giveCardActionn,
     hitAction,
     turnFaceAction
 } from "../actions/gameAction";
-import {HIT_CARD, STAND_CARD} from "../constants";
+import {STAND_CARD} from "../constants";
 
 const useStyles = makeStyles((theme: Theme) => createStyles(
     {
