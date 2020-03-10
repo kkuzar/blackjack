@@ -13,9 +13,8 @@ import {
 import {makeStyles} from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import {connect} from "react-redux";
-import {betDownAction, giveCardActionn, turnFaceAction, updateScoreAction} from "../actions/gameAction";
-import {calcAndUpdateScore, tranlateNumber2Card} from "../gameLogic";
-import {STAND_CARD} from "../constants";
+import {betDownAction, GameOverAction, giveCardActionn, hitAction, turnFaceAction} from "../actions/gameAction";
+import {HIT_CARD, STAND_CARD} from "../constants";
 
 const useStyles = makeStyles((theme: Theme) => createStyles(
     {
@@ -54,6 +53,7 @@ const mapStateToProps = (state) => {
         isSpliceAva: state.game.isSpliceAva,
         cards: state.game.cards,
         scores: state.game.scores,
+        isNewGameAva: state.game.isNewGameAva,
         turnsto: null,
     }
 };
@@ -64,6 +64,7 @@ const mapDispatchToProps = (dispatch) => {
         betDown: num => dispatch(betDownAction(num)),
         giveCard: () => dispatch(giveCardActionn()),
         turnFace: (nextact) => dispatch(turnFaceAction(nextact)),
+        hitCard: () => dispatch(hitAction()),
     }
 };
 
@@ -73,8 +74,7 @@ const GamePannel: React.FC = (props: any) => {
     const classes = useStyles();
     const betAction = props.betDown;
     const turnFace = props.turnFace;
-
-    const scores = props.scores;
+    const hitCard = props.hitCard;
 
     return (
         <Card>
@@ -132,7 +132,9 @@ const GamePannel: React.FC = (props: any) => {
                       spacing={1}>
 
                     <Grid item>
-                        <Button variant="contained" disabled={!props.isHitAva} className={classes.hitbtn}>
+                        <Button variant="contained"
+                                onClick={hitCard}
+                                disabled={!props.isHitAva} className={classes.hitbtn}>
                             HIT
                         </Button>
                     </Grid>
@@ -146,15 +148,15 @@ const GamePannel: React.FC = (props: any) => {
                         </Button>
                     </Grid>
 
-                    <Grid item>
-                        <Button variant="contained" disabled={!props.isDoubleAva}>
-                            DOUBLE
-                        </Button>
-                    </Grid>
+                    {/*<Grid item>*/}
+                    {/*    <Button variant="contained" disabled={!props.isDoubleAva}>*/}
+                    {/*        DOUBLE*/}
+                    {/*    </Button>*/}
+                    {/*</Grid>*/}
 
                     {/*<Grid item>*/}
-                    {/*    <Button variant="contained" disabled={!props.isSpliceAva}>*/}
-                    {/*        SPLIT*/}
+                    {/*    <Button variant="contained" onClick={() => restart} disabled={!props.isNewGameAva}>*/}
+                    {/*        NEW GAME*/}
                     {/*    </Button>*/}
                     {/*</Grid>*/}
                 </Grid>

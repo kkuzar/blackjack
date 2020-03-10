@@ -1,21 +1,24 @@
 import {
     BET_DOWN,
+    BUST_CARD,
+    DI_IDLE,
+    DI_TRIGGER,
+    DOUBLE_CARD, GAME_OVER,
     GIVE_CARD,
-    DOUBLE_CARD,
     HIT_CARD,
+    PUSH_CARD,
     STAND_CARD,
     TURN_FACE,
     UPDATE_SCORE,
-    WIN_CARD,
-    DI_TRIGGER, DI_IDLE, PUSH_CARD, BUST_CARD
+    WIN_CARD
 } from "../constants";
-import { AnyAction} from "redux";
+import {AnyAction} from "redux";
 
-export const betDownAction =  (betnum: number = 100) : AnyAction => {
+export const betDownAction = (betnum: number = 100): AnyAction => {
     return {
         type: BET_DOWN,
         betin: betnum,
-        isDealAva : true,
+        isDealAva: true,
         isHitAva: false,
         isStandAva: true,
         isDoubleAva: false,
@@ -24,7 +27,7 @@ export const betDownAction =  (betnum: number = 100) : AnyAction => {
     }
 };
 
-export const giveCardActionn = () : AnyAction => {
+export const giveCardActionn = (): AnyAction => {
     return {
         type: GIVE_CARD,
         isDealAva: false,
@@ -35,14 +38,14 @@ export const giveCardActionn = () : AnyAction => {
     }
 };
 
-export const updateScoreAction =  (house: number = 0, player: number = 0) : AnyAction => {
+export const updateScoreAction = (house: number = 0, player: number = 0): AnyAction => {
     return {
         type: UPDATE_SCORE,
         scores: [house, player]
     }
 };
 
-export const turnFaceAction = (nextAct: (STAND_CARD | DOUBLE_CARD | HIT_CARD | null )) => {
+export const turnFaceAction = (nextAct: (STAND_CARD | DOUBLE_CARD | HIT_CARD | null)) => {
 
     return {
         type: TURN_FACE,
@@ -50,35 +53,70 @@ export const turnFaceAction = (nextAct: (STAND_CARD | DOUBLE_CARD | HIT_CARD | n
     }
 };
 
-export const standAction  = () => {
+export const standAction = () => {
     return {
         type: STAND_CARD,
+        isHitAva: false,
+        isStandAva: false,
     }
 };
 
-export const WinAction  = () : AnyAction => {
+export const hitAction = () => {
+    return {
+        type: HIT_CARD,
+        isHitAva: true,
+        isStandAva: true,
+    }
+};
+
+export const WinAction = (): AnyAction => {
     return {
         type: WIN_CARD,
+        isNewGameAva: true,
+        isHitAva: false,
+        isStandAva: false,
     }
 };
 
 export const PushAction = (): AnyAction => {
-  return {
-      type: PUSH_CARD
-  }
+    return {
+        type: PUSH_CARD,
+        isNewGameAva: true,
+        isHitAva: false,
+        isStandAva: false,
+    }
 };
 
 export const LoseAction = (): AnyAction => {
     return {
-        type: BUST_CARD
+        type: BUST_CARD,
+        isNewGameAva: true,
+        isHitAva: false,
+        isStandAva: false,
     }
 };
 
-export const openDialogAction  = (title:string = '', body:string = ''): AnyAction => {
+export const GameOverAction = () : AnyAction => {
+    return {
+        type: GAME_OVER,
+        isDealAva: false,
+        isHitAva: false,
+        isStandAva: false,
+        isDoubleAva: false,
+        isSpliceAva: false,
+        isNewGameAva: false,
+        isBetAva: true,
+        turnsto: null,
+    }
+};
+
+export const openDialogAction = (title: string = '', body: string = '',
+                                 actionType: (BUST_CARD | WIN_CARD | PUSH_CARD) = PUSH_CARD): AnyAction => {
     return {
         type: DI_TRIGGER,
         title: title,
         bodyMsg: body,
+        colorStyle: actionType,
         open: true,
     }
 };

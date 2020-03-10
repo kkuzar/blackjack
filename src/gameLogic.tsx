@@ -1,21 +1,22 @@
 import {CardDeck, CardType, CONTINUE_FLAG, GeneratedCardNumber, LOSE_FLAG, PUSH_FLAG, WIN_FLAG} from "./constants";
 
-export const range = (start, stop, step) => Array.from({ length: (stop - start) / step + 1}, (_, i) => start + (i * step));
 
-export const shuffle = (arr: number[]) =>  arr.sort(() => Math.random() - 0.5);
+export const range = (start, stop, step) => Array.from({length: (stop - start) / step + 1}, (_, i) => start + (i * step));
 
-export const  removeNumbersFromArray = (targetArr: number[] , v:number[]) => {
+export const shuffle = (arr: number[]) => arr.sort(() => Math.random() - 0.5);
+
+export const removeNumbersFromArray = (targetArr: number[], v: number[]) => {
     var what, a = v, L = a.length, ax;
     while (L > 1 && targetArr.length) {
         what = a[--L];
-        while ((ax= targetArr.indexOf(what)) !== -1) {
+        while ((ax = targetArr.indexOf(what)) !== -1) {
             targetArr.splice(ax, 1);
         }
     }
     return targetArr;
 };
 
-export const calcAndUpdateScore = (house: CardType[], player: CardType[], turnCardFace:boolean = false) => {
+export const calcAndUpdateScore = (house: CardType[], player: CardType[], turnCardFace: boolean = false) => {
 
     const addReducer = (accumulator, currentValue) => accumulator + currentValue;
 
@@ -27,7 +28,9 @@ export const calcAndUpdateScore = (house: CardType[], player: CardType[], turnCa
         }
     }).reduce(addReducer);
 
-    if (turnCardFace)  houseHand = house.map((e) => {return e.value}).reduce(addReducer);
+    if (turnCardFace) houseHand = house.map((e) => {
+        return e.value
+    }).reduce(addReducer);
 
     const playerHand = player.map((e) => {
         return e.value
@@ -76,13 +79,22 @@ export const returnScoresWithStoredStates = (state, turnCardFace = false) => {
         let {househand, playerhand} = calcAndUpdateScore(house, player, turnCardFace);
         return [househand, playerhand];
     }
-    return [0,0];
+    return [0, 0];
 };
 
-export const checkWinOrNotBeforeAddCard = (househand: number, playerhand:number) => {
-      if (househand === 21 || playerhand > 21) return LOSE_FLAG;
-      if (playerhand === 21 || (househand > 21)) return WIN_FLAG;
-      if ((playerhand === househand) && (playerhand < 21) ) return  PUSH_FLAG;
-      if (househand < 21 && (playerhand < househand)) return LOSE_FLAG;
-      return CONTINUE_FLAG;
+export const checkWinOrNotBeforeAddCard = (househand: number, playerhand: number) => {
+    console.log("house -> ", househand, " player -> ", playerhand);
+
+    if ((playerhand === househand) && (playerhand < 21)) return PUSH_FLAG;
+
+    if (househand > 21 && (playerhand <= 21)) return WIN_FLAG;
+    if (playerhand > 21 && (househand <= 21)) return LOSE_FLAG;
+
+    if (househand === 21) return LOSE_FLAG;
+    if (playerhand === 21) return WIN_FLAG;
+
+
+    if (househand < 21 && (playerhand < househand)) return LOSE_FLAG;
+    if (playerhand < 21 && (househand < playerhand)) return WIN_FLAG;
+    return CONTINUE_FLAG;
 };

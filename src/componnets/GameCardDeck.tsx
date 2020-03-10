@@ -1,32 +1,19 @@
-import React, {Fragment, useEffect, useRef, useState} from 'react'
+import React, {Fragment} from 'react'
 import {
     Box,
     Card,
     CardContent,
     createStyles,
-    Divider,
     Grid,
     Theme,
 } from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
-import {BET_DOWN, GAME_STARTED, GeneratedCardNumber, GIVE_CARD} from "../constants";
+import {BET_DOWN, GAME_STARTED, GeneratedCardNumber, GIVE_CARD, HIT_CARD} from "../constants";
 import GameCard from "./GameCard";
 import {connect} from "react-redux";
 import {calcAndUpdateScore, tranlateNumber2Card} from "../gameLogic";
-import {betDownAction, giveCardActionn, turnFaceAction, updateScoreAction} from "../actions/gameAction";
+import { updateScoreAction} from "../actions/gameAction";
 
-
-const useDidUpdate = (callback, deps) => {
-    const hasMount = useRef(false);
-
-    useEffect(() => {
-        if (hasMount.current) {
-            callback()
-        } else {
-            hasMount.current = true
-        }
-    }, deps)
-};
 
 const useStyles = makeStyles((theme: Theme) => createStyles(
     {
@@ -84,7 +71,7 @@ const scoreBoard = (color, num, classname, boardString = 'house') => {
 };
 
 const RackElement = (styleClass, propsContext, role: string = 'house') => {
-    const caseWhenHideCardFace = [GAME_STARTED, BET_DOWN, GIVE_CARD];
+    const caseWhenHideCardFace = [GAME_STARTED, BET_DOWN, GIVE_CARD, HIT_CARD];
     const cardrack: GeneratedCardNumber = propsContext.cards;
     const {house, player} = tranlateNumber2Card(cardrack, (!caseWhenHideCardFace.includes(propsContext.type)));
 

@@ -1,16 +1,15 @@
 import {AnyAction, combineReducers} from "redux";
 import {
-    BET_DOWN,
+    BET_DOWN, BUST_CARD,
     DI_IDLE,
-    DI_TRIGGER,
+    DI_TRIGGER, GAME_OVER,
     GAME_STARTED,
-    GIVE_CARD, PUSH_CARD,
+    GIVE_CARD, HIT_CARD, PUSH_CARD,
     STAND_CARD,
     TURN_FACE,
-    UPDATE_SCORE
+    UPDATE_SCORE, WIN_CARD
 } from "../constants";
-import {act, Simulate} from "react-dom/test-utils";
-import {calcAndUpdateScore, range, shuffle, tranlateNumber2Card} from "../gameLogic";
+import {range, shuffle} from "../gameLogic";
 
 
 const gameInitialState = {
@@ -22,6 +21,7 @@ const gameInitialState = {
     isStandAva: false,
     isDoubleAva: false,
     isSpliceAva: false,
+    isNewGameAva: false,
     isBetAva: true,
     cards: {h: [], p: []},
     deck: shuffle(range(1, 52, 1)),
@@ -85,12 +85,8 @@ const gameReducer = (state = gameInitialState, action: AnyAction) => {
             let resStand =  {
                 ...state,
                 type: action.type,
-                isDealAva: action.isDealAva,
                 isHitAva: action.isHitAva,
                 isStandAva: action.isStandAva,
-                isDoubleAva: action.isDoubleAva,
-                isSpliceAva: action.isSpliceAva,
-                isBetAva: action.isBetAva,
             };
             // shuffle the deck.
             resStand.deck = shuffle(resStand.deck);
@@ -98,11 +94,61 @@ const gameReducer = (state = gameInitialState, action: AnyAction) => {
             // @ts-ignore
             resStand.cards.h.push(resStand.deck.pop());
             return resStand;
+        case HIT_CARD:
+            let resHit = {
+                ...state,
+                type: action.type,
+                isHitAva: action.isHitAva,
+                isStandAva: action.isStandAva,
+            };
+            // @ts-ignore
+            resHit.cards.p.push(resHit.deck.pop());
+            return resHit;
         case PUSH_CARD:
             return {
                 ...state,
-                type: action.type
+                type: action.type,
+                cash: state.cash + state.betin,
+                betin: 0,
+                isNewGameAva: action.isNewGameAva,
+                isHitAva: action.isHitAva,
+                isStandAva: action.isStandAva,
             };
+        case WIN_CARD:
+            return {
+                ...state,
+                type: action.type,
+                cash: state.cash + (2 * state.betin),
+                betin: 0,
+                isNewGameAva: action.isNewGameAva,
+                isHitAva: action.isHitAva,
+                isStandAva: action.isStandAva,
+            };
+        case BUST_CARD:
+            return {
+                ...state,
+                betin: 0,
+                isNewGameAva: action.isNewGameAva,
+                isHitAva: action.isHitAva,
+                isStandAva: action.isStandAva,
+            };
+        case GAME_OVER:
+            let gameRes =  {
+                ...state,
+                type: action.type,
+                isDealAva: action.isDealAva,
+                isHitAva: action.isHitAva,
+                isStandAva: action.isStandAva,
+                isDoubleAva: action.isDoubleAva,
+                isSpliceAva: action.isSpliceAva,
+                isBetAva: action.isBetAva,
+                deck: shuffle(range(1, 52, 1)),
+                scores: [0,0],
+                turnsto: null,
+            };
+            gameRes.cards.h = [];
+            gameRes.cards.p = [];
+            return gameRes;
         default:
             return state;
     }
@@ -118,6 +164,7 @@ const dialogReducer = (state = dialogInitState , action) => {
                  type: action.type,
                  title: action.title,
                  bodyMsg: action.bodyMsg,
+                 colorStyle: action.colorStyle,
                  open: true,
              };
          case DI_IDLE:

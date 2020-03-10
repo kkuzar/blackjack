@@ -1,5 +1,5 @@
 import React from 'react'
-import {Button, createStyles, Grid, Paper, Theme} from "@material-ui/core";
+import {createStyles, Grid, Paper, Theme} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 
 import GamePannel from "../componnets/GamePannel";
@@ -52,10 +52,7 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 function GameTable(props)  {
-
     const classes = useStyles();
-    const openD = props.openD;
-
     return (
         <Grid  >
             <Grid container spacing={3}>
