@@ -1,6 +1,16 @@
-import { takeEvery, put } from 'redux-saga/effects'
-import {CONTINUE_FLAG, GIVE_CARD, STAND_CARD, TURN_FACE} from "../constants";
-import {standAction, updateScoreAction, WinAction} from "../actions/gameAction";
+import { takeEvery, put, select, call } from 'redux-saga/effects'
+import {
+    BUST_CARD,
+    CONTINUE_FLAG,
+    GIVE_CARD,
+    LOSE_FLAG,
+    PUSH_CARD,
+    PUSH_FLAG,
+    STAND_CARD,
+    TURN_FACE,
+    WIN_CARD
+} from "../constants";
+import {standAction, updateScoreAction, WinAction, PushAction, LoseAction} from "../actions/gameAction";
 import gameStore from "../stores/gameStore";
 import {
     calcAndUpdateScore,
@@ -9,33 +19,46 @@ import {
     tranlateNumber2Card
 } from "../gameLogic";
 
+
 function* rootSaga() {
     yield takeEvery(GIVE_CARD, calcScoreAndCheckIfWinAfterGaveCard);
-    yield takeEvery(TURN_FACE, handleTurnFace );
+    yield takeEvery(TURN_FACE, handleTurns);
+    yield takeEvery(STAND_CARD, handleTurns);
+
+
+    yield takeEvery(BUST_CARD, handleBust);
+    yield takeEvery(WIN_CARD, handleWin);
+    yield takeEvery(PUSH_CARD, handlePush);
 }
 
-function*  handleTurnFace () {
+function*  handleTurns () {
 
-    const nextAct = getNextAction();
-    const [house, player] = getScores(true);
+    let [house, player] = yield getScores(true);
+    yield put(updateScoreAction(house, player));
+    console.log("turn face -> ", house, player);
     let res = checkWinOrNotBeforeAddCard(house, player);
-    console.log(res, nextAct, ((res === CONTINUE_FLAG && ( nextAct === STAND_CARD)) ));
-    if(res === CONTINUE_FLAG && ( nextAct === STAND_CARD)) return yield put(standAction());
-    yield console.log("card face turned.")
+
+    if (res === CONTINUE_FLAG) {
+        console.log("continue to stand action");
+        let data = yield select((state)=> state.game.turnsto);
+        if (data === STAND_CARD) return yield  put(standAction());
+    }
+
+    if (res === LOSE_FLAG) {
+        console.log("losed");
+        return yield put(LoseAction());
+    }
+
+    if (res === PUSH_FLAG) {
+        console.log("pushed");
+        return yield put(PushAction())
+    }
 }
 
 function* calcScoreAndCheckIfWinAfterGaveCard () {
-    const [house, player] = getScores();
+    const [house, player] = getScores(false);
     yield put(updateScoreAction(house, player));
     if (player === 21) return yield put(WinAction());
-}
-
-function getNextAction() {
-    const store = gameStore();
-    const state = store.getState();
-
-    // @ts-ignore
-    return state.game.nextstate;
 }
 
 function getScores(turnCardFace = false) {
@@ -43,5 +66,17 @@ function getScores(turnCardFace = false) {
     const state = store.getState();
     return returnScoresWithStoredStates(state, turnCardFace);
 }
+
+function handleWin() {
+
+}
+function handlePush() {
+
+}
+
+function handleBust() {
+
+}
+
 
 export default rootSaga;

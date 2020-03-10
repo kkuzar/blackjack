@@ -54,6 +54,7 @@ const mapStateToProps = (state) => {
         isSpliceAva: state.game.isSpliceAva,
         cards: state.game.cards,
         scores: state.game.scores,
+        turnsto: null,
     }
 };
 
@@ -77,7 +78,6 @@ const GamePannel: React.FC = (props: any) => {
 
     return (
         <Card>
-            { JSON.stringify(scores, null, ' ')}
             <CardContent>
                 <Grid
                     justify="space-between"
@@ -139,8 +139,7 @@ const GamePannel: React.FC = (props: any) => {
 
                     <Grid item>
                         <Button variant="contained"
-                                onClick={() =>
-                                    turnFace(STAND_CARD)}
+                                onClick={() => turnFace(STAND_CARD)}
                                 disabled={!props.isStandAva}
                                 className={classes.standbtn}>
                             STAND

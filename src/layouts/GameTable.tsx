@@ -1,21 +1,16 @@
 import React from 'react'
-import { createStyles, Grid, Paper, Theme} from "@material-ui/core";
+import {Button, createStyles, Grid, Paper, Theme} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
-import TableBgImg from '../imgs/assets/table.jpg'
 
 import GamePannel from "../componnets/GamePannel";
 import GameCardDeck from "../componnets/GameCardDeck";
+import GameDialog from "../componnets/GameDialog";
+import {closeDialogAction, openDialogAction} from "../actions/gameAction";
+import {connect} from "react-redux";
 
 
 const useStyles = makeStyles((theme: Theme) => createStyles(
     {
-        root: {
-            backgroundImage: `url(${TableBgImg})`,
-            height: 800,
-            objectFit: "scale-down",
-            flexGrow: 1,
-            marginTop: 5
-        },
         header: {
             marginTop: 10,
             marginBottom: 10,
@@ -40,11 +35,29 @@ const useStyles = makeStyles((theme: Theme) => createStyles(
     }
 ));
 
+const mapStateToProps = (state) => {
+    return {
+        title: state.dialog.title,
+        bodyMsg: state.dialog.bodyMsg,
+        open: state.dialog.open
+    }
+};
+
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        openD: (in_title, in_body) => dispatch(openDialogAction(in_title, in_body)),
+        closeD: () => dispatch(closeDialogAction()),
+    }
+};
+
 function GameTable(props)  {
 
     const classes = useStyles();
+    const openD = props.openD;
+
     return (
-        <Grid className={classes.root}>
+        <Grid  >
             <Grid container spacing={3}>
                 <Grid item xs className={classes.header}>
                     <Paper className={classes.paper}> BlackJack | kuzar.fi</Paper>
@@ -64,8 +77,9 @@ function GameTable(props)  {
                 </Grid>
             </Grid>
 
+            <GameDialog/>
+            {/*<Button onClick={() => openD("test", "test again")} >test</Button>*/}
         </Grid>);
 }
 
-
-export default GameTable
+export default connect(mapStateToProps,mapDispatchToProps)(GameTable);

@@ -3,26 +3,37 @@ import './App.css';
 import GameTable from "./layouts/GameTable";
 import gameStore from "./stores/gameStore";
 import {Provider} from 'react-redux'
+import {makeStyles} from "@material-ui/core/styles";
+import {Container, createStyles, Theme} from "@material-ui/core";
+import TableBgImg from "./imgs/assets/pokerbg.svg";
 
 let gStore = gameStore();
 
-export gStore
+const useStyles = makeStyles((theme: Theme) => createStyles({
+    root: {
+        backgroundImage: `url(${TableBgImg})`,
+        objectFit: "scale-down",
+        flexGrow: 1,
+        minHeight: "100vh",
+        minWidth: "100vw",
+        marginTop: 5,
+        marginBottom: 0,
+    }
+}));
 
-
-export const App = () => {
-
-
-
+const App = () => {
+    const classes = useStyles();
     return (
       <Provider store={gStore}>
-          <div className="App">
+
+          <Container fixed className={classes.root}>
               <GameTable />
-          </div>
+          </Container>
       </Provider>
   );
 };
 
-  App;
+export default App;
 
 
 // <header className="App-header">

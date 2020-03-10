@@ -13,6 +13,7 @@ import {BET_DOWN, GAME_STARTED, GeneratedCardNumber, GIVE_CARD} from "../constan
 import GameCard from "./GameCard";
 import {connect} from "react-redux";
 import {calcAndUpdateScore, tranlateNumber2Card} from "../gameLogic";
+import {betDownAction, giveCardActionn, turnFaceAction, updateScoreAction} from "../actions/gameAction";
 
 
 const useDidUpdate = (callback, deps) => {
@@ -36,6 +37,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles(
         },
         houserack: {
             minHeight: 220,
+            margin: '5px 0 5px 0',
             backgroundColor: 'rgba(0, 0, 0, 0.2)'
         },
         score: {
@@ -45,6 +47,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles(
 ));
 
 const mapStateToProps = (state) => {
+    // console.log(state.game.scores);
     return {
         type: state.game.type,
         cash: state.game.cash,
@@ -57,22 +60,23 @@ const mapStateToProps = (state) => {
         isSpliceAva: state.game.isSpliceAva,
         cards: state.game.cards,
         deck: state.game.deck,
-        scores: state.game.scores
+        scores: state.game.scores,
+        turnsto: null,
     }
 };
 
+const mapDispatchToProps = (dispatch) => {
+    return {
+        udpateScore: (house, player) => dispatch(updateScoreAction(house, player)),
+    }
+};
 
 const scoreBoard = (color, num, classname, boardString = 'house') => {
     return (
         <Grid item>
             <Card className={classname}>
                 <CardContent>
-                    {/*<Grid*/}
-                    {/*>*/}
-                    {/*    <Typography>*/}
                     <Box fontWeight={500} color={color}> {boardString} : <strong>{num}</strong> </Box>
-                    {/*</Typography>*/}
-                    {/*</Grid>*/}
                 </CardContent>
             </Card>
         </Grid>
@@ -125,7 +129,7 @@ const GameCardDeck = (props) => {
 
                 {RackElement(classes.score, props)}
             </Grid>
-            <Divider variant="middle"/>
+
             <Grid container
                   spacing={1}
                   justify="center"
@@ -138,4 +142,4 @@ const GameCardDeck = (props) => {
     );
 };
 
-export default connect(mapStateToProps)(GameCardDeck);
+export default connect(mapStateToProps,mapDispatchToProps)(GameCardDeck);

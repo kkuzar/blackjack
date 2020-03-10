@@ -1,7 +1,16 @@
 import {AnyAction, combineReducers} from "redux";
-import {BET_DOWN, GAME_STARTED, GIVE_CARD, STAND_CARD, TURN_FACE, UPDATE_SCORE} from "../constants";
-import {act} from "react-dom/test-utils";
-import {range, shuffle} from "../gameLogic";
+import {
+    BET_DOWN,
+    DI_IDLE,
+    DI_TRIGGER,
+    GAME_STARTED,
+    GIVE_CARD, PUSH_CARD,
+    STAND_CARD,
+    TURN_FACE,
+    UPDATE_SCORE
+} from "../constants";
+import {act, Simulate} from "react-dom/test-utils";
+import {calcAndUpdateScore, range, shuffle, tranlateNumber2Card} from "../gameLogic";
 
 
 const gameInitialState = {
@@ -17,12 +26,22 @@ const gameInitialState = {
     cards: {h: [], p: []},
     deck: shuffle(range(1, 52, 1)),
     scores: [0, 0],  // [ house , player]
-    nextstate: null,
+    turnsto: null,
+};
+
+
+const dialogInitState = {
+    type: DI_IDLE,
+    title: '',
+    bodyMsg: '',
+    colorStyle: PUSH_CARD,
+    open: false
 };
 
 
 const gameReducer = (state = gameInitialState, action: AnyAction) => {
     switch (action.type) {
+
         case BET_DOWN:
             return {
                 ...state,
@@ -53,18 +72,17 @@ const gameReducer = (state = gameInitialState, action: AnyAction) => {
         case UPDATE_SCORE:
             return {
                 ...state,
-                // type: action.type,
+                //type: action.type,
                 scores: action.scores
             };
         case TURN_FACE:
-            let resTurn = {
+           return {
                 ...state,
                 type: action.type,
-                nextstate: action.nextstate
+                turnsto: action.turnsto,
             };
-            return resTurn;
         case STAND_CARD:
-            let resStand = {
+            let resStand =  {
                 ...state,
                 type: action.type,
                 isDealAva: action.isDealAva,
@@ -74,18 +92,49 @@ const gameReducer = (state = gameInitialState, action: AnyAction) => {
                 isSpliceAva: action.isSpliceAva,
                 isBetAva: action.isBetAva,
             };
+            // shuffle the deck.
+            resStand.deck = shuffle(resStand.deck);
+            resStand.deck = shuffle(resStand.deck);
             // @ts-ignore
-            resStand.deck = shuffle(resStand.deck);resStand.deck = shuffle(resStand.deck);
-            //
+            resStand.cards.h.push(resStand.deck.pop());
             return resStand;
+        case PUSH_CARD:
+            return {
+                ...state,
+                type: action.type
+            };
         default:
             return state;
     }
 };
 
 
+
+const dialogReducer = (state = dialogInitState , action) => {
+     switch (action.type) {
+         case DI_TRIGGER:
+             return {
+                 ...state,
+                 type: action.type,
+                 title: action.title,
+                 bodyMsg: action.bodyMsg,
+                 open: true,
+             };
+         case DI_IDLE:
+         default:
+             return {
+                 type: action.type,
+                 title: '',
+                 bodyMsg: '',
+                 open: false,
+             }
+     }
+};
+
+
 const rootReducer = combineReducers({
     game: gameReducer,
+    dialog: dialogReducer,
 });
 
 export default rootReducer;

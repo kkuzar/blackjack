@@ -1,4 +1,14 @@
-import {BET_DOWN, GIVE_CARD, DOUBLE_CARD, HIT_CARD, STAND_CARD, TURN_FACE, UPDATE_SCORE, WIN_CARD} from "../constants";
+import {
+    BET_DOWN,
+    GIVE_CARD,
+    DOUBLE_CARD,
+    HIT_CARD,
+    STAND_CARD,
+    TURN_FACE,
+    UPDATE_SCORE,
+    WIN_CARD,
+    DI_TRIGGER, DI_IDLE, PUSH_CARD, BUST_CARD
+} from "../constants";
 import { AnyAction} from "redux";
 
 export const betDownAction =  (betnum: number = 100) : AnyAction => {
@@ -33,27 +43,48 @@ export const updateScoreAction =  (house: number = 0, player: number = 0) : AnyA
 };
 
 export const turnFaceAction = (nextAct: (STAND_CARD | DOUBLE_CARD | HIT_CARD | null )) => {
-    console.log(nextAct);
+
     return {
         type: TURN_FACE,
-        nextstate: nextAct
+        turnsto: nextAct
     }
 };
 
 export const standAction  = () => {
     return {
         type: STAND_CARD,
-        isDealAva : false,
-        isHitAva: false,
-        isStandAva: false,
-        isDoubleAva: false,
-        isSpliceAva: false,
-        isBetAva: false,
     }
 };
 
 export const WinAction  = () : AnyAction => {
     return {
         type: WIN_CARD,
+    }
+};
+
+export const PushAction = (): AnyAction => {
+  return {
+      type: PUSH_CARD
+  }
+};
+
+export const LoseAction = (): AnyAction => {
+    return {
+        type: BUST_CARD
+    }
+};
+
+export const openDialogAction  = (title:string = '', body:string = ''): AnyAction => {
+    return {
+        type: DI_TRIGGER,
+        title: title,
+        bodyMsg: body,
+        open: true,
+    }
+};
+
+export const closeDialogAction = (): AnyAction => {
+    return {
+        type: DI_IDLE,
     }
 };

@@ -58,6 +58,15 @@ import D11 from "../imgs/cardpng/jack_of_diamonds2.png";
 import D12 from "../imgs/cardpng/queen_of_diamonds2.png";
 import D13 from "../imgs/cardpng/king_of_diamonds2.png";
 
+// Dialog Status
+export const DI_IDLE = 'DI_IDLE';
+export type DI_IDLE = typeof DI_IDLE;
+
+export const DI_TRIGGER = 'DI_TRIGGER';
+export type DI_TRIGGER = typeof DI_TRIGGER;
+
+
+
 // Game Status
 
 export const GAME_STARTED = 'GAME_STARTED';
@@ -122,6 +131,7 @@ export const HEARTS = "hearts";
 export const WIN_FLAG = "WIN";
 export const LOSE_FLAG = "LOSE";
 export const CONTINUE_FLAG = "CON";
+export const PUSH_FLAG = "PUSH";
 
 export type CardType = {
     name: typeof DIAMONDS | typeof CLUBS | typeof SPADES | typeof HEARTS | string,
